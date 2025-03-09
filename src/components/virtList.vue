@@ -18,14 +18,13 @@
         class="absolute top-0 w-full"
         :style="{
           height: innerContainerHeight + 'px',
+          transform: `translateY(${scrollTop}px)`,
         }"
       >
         <div
           v-for="item in virtList"
           :key="item.index"
-          :style="{
-            transform: `translateY(${scrollTop}px)`,
-          }"
+          :style="{}"
           class="border-t-2 border-gray-700 flex h-10 px-3 items-center first-of-type:border-t-0"
         >
           <template v-if="isScrolling"> scrolling </template>
@@ -47,7 +46,7 @@ interface itemInterface {
 const items: Ref<Array<itemInterface>> = ref(
   Array.from({ length: 1_000_000 }, (_, index) => ({
     index: index,
-    text: Math.random().toString(36).slice(2),
+    text: 'Element ' + index,
   })),
 )
 
@@ -90,6 +89,18 @@ const scrollTop: Ref<number> = ref(0)
 const isScrolling: Ref<boolean> = ref(false)
 const timeoutId: Ref<number | null> = ref(null)
 
+function debounce(fn, delay?) {
+  let timeoutID = null
+  return function () {
+    clearTimeout(timeoutID)
+    const args = arguments
+    const that = this
+    timeoutID = setTimeout(function () {
+      fn.apply(that, args)
+    }, delay || 150)
+  }
+}
+
 const handleScroll = () => {
   isScrolling.value = true
   if (typeof timeoutId.value === 'number') {
@@ -108,12 +119,12 @@ const handleScroll = () => {
 
 onMounted(() => {
   if (scrollElementRef.value) {
-    scrollElementRef.value.addEventListener('scroll', handleScroll)
+    scrollElementRef.value.addEventListener('scroll', debounce(handleScroll))
   }
 })
 onUnmounted(() => {
   if (scrollElementRef.value) {
-    scrollElementRef.value?.removeEventListener('scroll', handleScroll)
+    scrollElementRef.value?.removeEventListener('scroll', debounce(handleScroll))
   }
 })
 </script>
