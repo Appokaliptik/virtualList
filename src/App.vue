@@ -3,11 +3,7 @@ import VirtList from './components/virtList.vue'
 </script>
 
 <template>
-  <header>
-    <VirtList />
-  </header>
-
-  <RouterView />
+  <VirtList />
 </template>
 
 <style scoped></style>
