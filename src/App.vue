@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import VirtList from './components/virtList.vue'
-import VirtListCopy from './components/virtListCopy.vue'
 </script>
 
 <template>
-  <VirtListCopy />
+  <VirtList />
 </template>
 
 <style scoped></style>

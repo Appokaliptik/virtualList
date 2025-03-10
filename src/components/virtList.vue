@@ -1,12 +1,6 @@
 <template>
   <div class="p-3">
     <h1 class="mb-10 text-5xl">Список</h1>
-    <button
-      @click="reverseList"
-      class="mb-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer"
-    >
-      reverse
-    </button>
     <div
       class="w-full overflow-auto border-2 border-blue-700 relative"
       :style="{
@@ -18,17 +12,17 @@
         class="absolute top-0 w-full"
         :style="{
           height: innerContainerHeight + 'px',
-          transform: `translateY(${scrollTop}px)`,
         }"
       >
         <div
           v-for="item in virtList"
           :key="item.index"
-          :style="{}"
+          :style="{
+            transform: `translateY(${translateY}px)`,
+          }"
           class="border-t-2 border-gray-700 flex h-10 px-3 items-center first-of-type:border-t-0"
         >
-          <template v-if="isScrolling"> scrolling </template>
-          <template v-else> {{ item.index }}. {{ item.text }} </template>
+          {{ item.index }}. {{ item.text }}
         </div>
       </div>
     </div>
@@ -44,34 +38,33 @@ interface itemInterface {
 }
 
 const items: Ref<Array<itemInterface>> = ref(
-  Array.from({ length: 1_000_000 }, (_, index) => ({
+  Array.from({ length: 3_000_000 }, (_, index) => ({
     index: index,
     text: 'Element ' + index,
   })),
 )
 
 const itemHeight: number = 40
+const coef = 1000
+
 const outerContainerHeight: number = 800
 const innerContainerHeight: ComputedRef<number> = computed(() => {
-  return items.value.length * itemHeight
+  return (items.value.length * itemHeight) / coef
+})
+const itemsCount: ComputedRef<number> = computed(() => {
+  return outerContainerHeight / itemHeight
 })
 
-const overScan: number = 3
-
-const reverseList = (): Ref<Array<itemInterface>> => {
-  items.value = [...items.value.slice().reverse()]
-  return items
-}
+const overScan: number = 0
 
 const scrollElementRef = ref<HTMLDivElement | null>(null)
 
 const startIndex: ComputedRef<number> = computed(() => {
-  const start = Math.floor(scrollTop.value / itemHeight)
+  const start = Math.floor((scrollTop.value / itemHeight) * coef)
   return Math.max(0, start - overScan)
 })
 const endIndex: ComputedRef<number> = computed(() => {
-  const end = Math.ceil((scrollTop.value + outerContainerHeight) / itemHeight)
-  return Math.min(items.value.length - 1, end + overScan)
+  return Math.min(items.value.length - 1, startIndex.value + itemsCount.value - 1)
 })
 
 const virtList: ComputedRef<Array<itemInterface>> = computed(() => {
@@ -86,32 +79,12 @@ const virtList: ComputedRef<Array<itemInterface>> = computed(() => {
 })
 
 const scrollTop: Ref<number> = ref(0)
-const isScrolling: Ref<boolean> = ref(false)
-const timeoutId: Ref<number | null> = ref(null)
-
-function debounce(fn, delay?) {
-  let timeoutID = null
-  return function () {
-    clearTimeout(timeoutID)
-    const args = arguments
-    const that = this
-    timeoutID = setTimeout(function () {
-      fn.apply(that, args)
-    }, delay || 150)
-  }
-}
+const translateY = ref(0)
 
 const handleScroll = () => {
-  isScrolling.value = true
-  if (typeof timeoutId.value === 'number') {
-    clearTimeout(timeoutId.value)
-  }
-  timeoutId.value = setTimeout(() => {
-    isScrolling.value = false
-  }, 150)
-
   if (scrollElementRef.value) {
     scrollTop.value = scrollElementRef.value.scrollTop
+    translateY.value = scrollTop.value
     console.log('offsetTop:', scrollTop.value)
     console.log(startIndex.value + '  ' + endIndex.value)
   }
@@ -119,12 +92,12 @@ const handleScroll = () => {
 
 onMounted(() => {
   if (scrollElementRef.value) {
-    scrollElementRef.value.addEventListener('scroll', debounce(handleScroll))
+    scrollElementRef.value.addEventListener('scroll', handleScroll)
   }
 })
 onUnmounted(() => {
   if (scrollElementRef.value) {
-    scrollElementRef.value?.removeEventListener('scroll', debounce(handleScroll))
+    scrollElementRef.value?.removeEventListener('scroll', handleScroll)
   }
 })
 </script>
