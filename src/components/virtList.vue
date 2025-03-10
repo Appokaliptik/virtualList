@@ -1,15 +1,15 @@
 <template>
-  <div class="p-3">
-    <h1 class="mb-10 text-5xl">Список</h1>
+  <div style="padding: 20px">
+    <h1 style="margin-bottom: 20px; font-size: 48px">Список</h1>
     <div
-      class="w-full overflow-auto border-2 border-blue-700 relative"
+      class="container"
       :style="{
         height: outerContainerHeight + 'px',
       }"
       ref="scrollElementRef"
     >
       <div
-        class="absolute top-0 w-full"
+        class="innerContainer"
         :style="{
           height: innerContainerHeight + 'px',
         }"
@@ -105,4 +105,27 @@ onUnmounted(() => {
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.container {
+  overflow: auto;
+  border: 2px solid blue;
+  position: relative;
+}
+.innerContainer {
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.item {
+  border: 1px solid blue;
+  height: 40px;
+  display: flex;
+  padding: 3px 0;
+  align-items: center;
+}
+.item:first-of-type {
+  border-top: 0;
+}
+
+/* border-t-2 border-gray-700 flex h-10 px-3 items-center first-of-type:border-t-0 */
+</style>
