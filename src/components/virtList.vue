@@ -55,16 +55,18 @@ const itemsCount: ComputedRef<number> = computed(() => {
   return outerContainerHeight / itemHeight
 })
 
-const overScan: number = 0
-
 const scrollElementRef = ref<HTMLDivElement | null>(null)
 
 const startIndex: ComputedRef<number> = computed(() => {
-  const start = Math.floor((scrollTop.value / itemHeight) * coef)
-  return Math.max(0, start - overScan)
+  let start = Math.floor((scrollTop.value / itemHeight) * coef)
+  // console.log
+  if (start > items.value.length - itemsCount.value) {
+    start = items.value.length - itemsCount.value
+  }
+  return start
 })
 const endIndex: ComputedRef<number> = computed(() => {
-  return Math.min(items.value.length - 1, startIndex.value + itemsCount.value - 1)
+  return Math.min(items.value.length, startIndex.value + itemsCount.value - 1)
 })
 
 const virtList: ComputedRef<Array<itemInterface>> = computed(() => {
@@ -108,20 +110,23 @@ onUnmounted(() => {
 <style scoped>
 .container {
   overflow: auto;
-  border: 2px solid blue;
+  border: 1px solid blue;
   position: relative;
+  box-sizing: border-box;
 }
 .innerContainer {
   position: absolute;
   top: 0;
   width: 100%;
+  box-sizing: border-box;
 }
 .item {
-  border: 1px solid blue;
+  border-top: 1px solid blue;
   height: 40px;
   display: flex;
-  padding: 3px 0;
+  padding: 0px 10px;
   align-items: center;
+  box-sizing: border-box;
 }
 .item:first-of-type {
   border-top: 0;

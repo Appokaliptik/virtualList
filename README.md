@@ -1,6 +1,6 @@
-# .
+# Vue Virt list
 
-This template should help get you started developing with Vue 3 in Vite.
+Vue Virt list works by only rendering part of a large data set (just enough to fill the viewport).
 
 ## Recommended IDE Setup
 
