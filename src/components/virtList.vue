@@ -20,7 +20,7 @@
           :style="{
             transform: `translateY(${translateY}px)`,
           }"
-          class="border-t-2 border-gray-700 flex h-10 px-3 items-center first-of-type:border-t-0"
+          class="item"
         >
           {{ item.index }}. {{ item.text }}
         </div>
