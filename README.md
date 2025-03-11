@@ -1,6 +1,7 @@
 # Vue Virt list
 
 Vue Virt list works by only rendering part of a large data set (just enough to fill the viewport).
+Works at 3 million items
 
 ## Recommended IDE Setup
 
