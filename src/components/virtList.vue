@@ -85,13 +85,10 @@ const translateY = ref(0)
 
 const handleScroll = () => {
   if (scrollElementRef.value) {
-    if (scrollElementRef.value.scrollTop > innerContainerHeight.value) {
-      return
-    }
     scrollTop.value = Math.min(scrollElementRef.value.scrollTop, innerContainerHeight.value)
     translateY.value = scrollTop.value
-    console.log('offsetTop:', scrollTop.value)
-    console.log(startIndex.value + '  ' + endIndex.value)
+    // console.log('offsetTop:', scrollTop.value)
+    // console.log(startIndex.value + '  ' + endIndex.value)
   }
 }
 
